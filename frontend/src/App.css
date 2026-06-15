@@ -299,6 +299,28 @@ body {
   display: flex;
   align-items: center;
   gap: 1.25rem;
+  width: 100%;
+}
+
+.booking-redirect-link {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: none;
+  border: 1px solid var(--border-color);
+  padding: 0.25rem 0.6rem;
+  border-radius: 2px;
+  transition: all 0.2s ease;
+}
+
+.booking-redirect-link:hover {
+  color: var(--text-dark);
+  border-color: var(--text-dark);
+  background-color: var(--bg-secondary);
 }
 
 .date-info h2 {
