@@ -392,6 +392,12 @@ body {
   flex-shrink: 0;
 }
 
+.time-block {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
 .class-row-left .start-time {
   font-size: 1.25rem;
   font-weight: 800;
