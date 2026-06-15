@@ -5,20 +5,19 @@ ENV NODE_ENV=production
 ENV PORT=3001
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
 
-# Switch to root to copy and install packages
-USER root
+# Use the default non-root user home directory
+WORKDIR /home/pptruser/app
 
-WORKDIR /usr/src/app
+# Copy package files and set ownership to pptruser
+COPY --chown=pptruser:pptruser package*.json ./
 
-COPY package*.json ./
-
-# Install project dependencies
+# Install dependencies using npm
 RUN npm ci
 
-# Copy application source code
-COPY . .
+# Copy project source code and set ownership to pptruser
+COPY --chown=pptruser:pptruser . .
 
-# Build typescript code to dist/
+# Build TypeScript to JavaScript
 RUN npm run build
 
 # Expose backend API port
