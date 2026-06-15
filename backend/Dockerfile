@@ -1,7 +1,6 @@
 FROM ghcr.io/puppeteer/puppeteer:latest
 
-# Set environment variables
-ENV NODE_ENV=production
+# Set environment variables (excluding NODE_ENV during build)
 ENV PORT=3001
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
 
@@ -11,14 +10,18 @@ WORKDIR /home/pptruser/app
 # Copy package files and set ownership to pptruser
 COPY --chown=pptruser:pptruser package*.json ./
 
-# Install dependencies using npm
+# Install ALL dependencies (including devDependencies like typescript)
 RUN npm ci
 
 # Copy project source code and set ownership to pptruser
 COPY --chown=pptruser:pptruser . .
 
-# Build TypeScript to JavaScript
+# Build TypeScript to JavaScript (tsc is now available!)
 RUN npm run build
+
+# Switch to production mode and prune devDependencies to save space
+ENV NODE_ENV=production
+RUN npm prune --production
 
 # Expose backend API port
 EXPOSE 3001
