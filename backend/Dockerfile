@@ -2,7 +2,6 @@ FROM ghcr.io/puppeteer/puppeteer:latest
 
 # Set environment variables (excluding NODE_ENV during build)
 ENV PORT=3001
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
 
 # Use the default non-root user home directory
 WORKDIR /home/pptruser/app
