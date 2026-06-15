@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import './App.css';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+const rawApiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+const API_BASE_URL = rawApiBase.endsWith('/') ? rawApiBase.slice(0, -1) : rawApiBase;
 
 interface ClassScheduleItem {
   date: string;
@@ -438,6 +440,7 @@ export default function App() {
           </div>
         )}
       </main>
+      <Analytics />
     </div>
   );
 }
