@@ -1,0 +1,63 @@
+:root {
+  /* Colors */
+  --bg-primary: #fcfcfc;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --border-color: #e5e5e5;
+  --border-color-hover: #1a1a1a;
+
+  --accent-color: #1a1a1a;
+  --text-main: #1a1a1a;
+  --text-muted: #737373;
+  --text-dark: #000000;
+  
+  /* Fonts */
+  --font-family: 'Outfit', 'Noto Sans TC', -apple-system, sans-serif;
+  
+  /* Shadow & Blur */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  font-family: var(--font-family);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d4d4d4;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a3a3a3;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
