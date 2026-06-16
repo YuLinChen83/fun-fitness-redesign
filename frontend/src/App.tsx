@@ -48,7 +48,9 @@ function parseClassDateTime(dateStr: string, timeStr: string): Date | null {
 }
 
 export default function App() {
-  const [selectedLocation, setSelectedLocation] = useState<string>('2');
+  const [selectedLocation, setSelectedLocation] = useState<string>(() => {
+    return localStorage.getItem('fun_fitness_preferred_location') || '2';
+  });
   const [selectedDate, setSelectedDate] = useState<string>(''); // Tracking active tab
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedTeacher, setSelectedTeacher] = useState<string>('all');
@@ -243,6 +245,7 @@ export default function App() {
 
   const handleLocationChange = (locId: string) => {
     setSelectedLocation(locId);
+    localStorage.setItem('fun_fitness_preferred_location', locId);
     setSearchQuery('');
     setSelectedTeacher('all');
     setShowFilters(false);
