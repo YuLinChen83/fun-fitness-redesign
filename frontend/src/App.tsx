@@ -56,7 +56,6 @@ export default function App() {
   
   const [schedule, setSchedule] = useState<ClassScheduleItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [isRevalidating, setIsRevalidating] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   
   const [dateTabs, setDateTabs] = useState<{ label: string; dateVal: string; dayNum: string; isToday: boolean }[]>([]);
@@ -130,7 +129,6 @@ export default function App() {
             } else {
               hasValidCache = true;
               setLoading(false);
-              setIsRevalidating(true);
             }
           }
         } catch (e) {
@@ -177,7 +175,6 @@ export default function App() {
       }
     } finally {
       setLoading(false);
-      setIsRevalidating(false);
     }
   };
 
@@ -272,18 +269,6 @@ export default function App() {
             onClick={() => handleLocationChange('1')}
           >
             士林
-          </button>
-
-          <button 
-            className="btn-sync-icon" 
-            onClick={() => fetchSchedule(mondayDateVal, selectedLocation, true)}
-            disabled={loading || isRevalidating}
-            title="同步課表"
-          >
-            <svg className={(loading || isRevalidating) ? 'spinning' : ''} width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M23 4v6h-6"></path>
-              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
-            </svg>
           </button>
         </div>
       </header>
