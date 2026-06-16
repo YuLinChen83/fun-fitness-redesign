@@ -56,6 +56,7 @@ export default function App() {
   
   const [schedule, setSchedule] = useState<ClassScheduleItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [isRevalidating, setIsRevalidating] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   
   const [dateTabs, setDateTabs] = useState<{ label: string; dateVal: string; dayNum: string; isToday: boolean }[]>([]);
@@ -107,7 +108,40 @@ export default function App() {
   }, [mondayDateVal, selectedLocation]);
 
   const fetchSchedule = async (date: string, locId: string, forceRefresh: boolean = false) => {
-    setLoading(true);
+    const cacheKey = `fun_fitness_schedule_loc_${locId}`;
+    const today = new Date();
+    const todayStr = `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()}`;
+
+    let hasValidCache = false;
+    let cachedData: { fetchedAtDate: string; schedule: ClassScheduleItem[] } | null = null;
+
+    if (!forceRefresh) {
+      const cachedStr = localStorage.getItem(cacheKey);
+      if (cachedStr) {
+        try {
+          cachedData = JSON.parse(cachedStr);
+          if (cachedData && Array.isArray(cachedData.schedule)) {
+            setSchedule(cachedData.schedule);
+            setError(null);
+            
+            if (cachedData.fetchedAtDate === todayStr) {
+              setLoading(false);
+              return;
+            } else {
+              hasValidCache = true;
+              setLoading(false);
+              setIsRevalidating(true);
+            }
+          }
+        } catch (e) {
+          console.error('解析快取失敗:', e);
+        }
+      }
+    }
+
+    if (!hasValidCache || forceRefresh) {
+      setLoading(true);
+    }
     setError(null);
     try {
       const response = await fetch(`${API_BASE_URL}/api/schedule`, {
@@ -125,12 +159,25 @@ export default function App() {
       if (!response.ok) {
         throw new Error(data.error || '無法載入課表資料');
       }
-      setSchedule(data.schedule || []);
+      
+      const newSchedule = data.schedule || [];
+      setSchedule(newSchedule);
+      
+      const cacheObj = {
+        fetchedAtDate: todayStr,
+        schedule: newSchedule
+      };
+      localStorage.setItem(cacheKey, JSON.stringify(cacheObj));
     } catch (err: any) {
       console.error(err);
-      setError(err.message || '無法連接伺服器，請確認後端是否運作中。');
+      if (!hasValidCache || forceRefresh) {
+        setError(err.message || '無法連接伺服器，請確認後端是否運作中。');
+      } else {
+        console.warn('背景更新失敗，維持舊快取資料:', err.message);
+      }
     } finally {
       setLoading(false);
+      setIsRevalidating(false);
     }
   };
 
@@ -230,10 +277,10 @@ export default function App() {
           <button 
             className="btn-sync-icon" 
             onClick={() => fetchSchedule(mondayDateVal, selectedLocation, true)}
-            disabled={loading}
+            disabled={loading || isRevalidating}
             title="同步課表"
           >
-            <svg className={loading ? 'spinning' : ''} width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg className={(loading || isRevalidating) ? 'spinning' : ''} width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M23 4v6h-6"></path>
               <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
             </svg>
